@@ -9,16 +9,21 @@ import sublime, sublime_plugin
 import pickle, os
 
 class AsciiCommand(sublime_plugin.TextCommand):  
-    def run(self, args, w, f='#', e=' '): 
-        print 'AsciiCommand'
+    def run(self, args, f='#', e=' '): 
         view = self.view 
+        selRegion = view.sel()[0]
+        wordRegion = selRegion
+        if selRegion.empty():
+            wordRegion = view.word(selRegion)
+        
+        words = view.substr(wordRegion)
         edit = view.begin_edit()
-        view.insert(edit, view.sel()[0].begin(), str2Ascii(w,f,e))
+        view.replace(edit, wordRegion, str2Ascii(words,f,e))
         view.end_edit(edit)
         # sublime.message_dialog("generate is success!")
 
 
-class AsciishapCommand(sublime_plugin.TextCommand):  
+class AsciisharpCommand(sublime_plugin.TextCommand):  
     def run(self, args):
         view = self.view
         selRegion = view.sel()[0]
